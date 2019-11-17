@@ -10,9 +10,9 @@ import Foundation
 import SwiftUI
 
 struct HideNavigationBar: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-        .navigationBarTitle("")
-        .navigationBarHidden(true)
-    }
+  func body(content: Content) -> some View {
+    content
+      .navigationBarTitle("")
+      .navigationBarHidden(true)
+  }
 }

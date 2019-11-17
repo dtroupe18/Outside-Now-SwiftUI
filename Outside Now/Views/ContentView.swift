@@ -10,52 +10,52 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @State private var searchText = ""
-    @State private var searchIsActive: Bool = false
-    @Environment(\.managedObjectContext) var context
-
-    private let database = Database()
-
-    func filteredCities() -> [City] {
-        return database.filteredCities(searchText: searchText)
-    }
-
-    var body: some View {
-        NavigationView {
-            VStack {
-                // Search view
-                SearchBar(searchText: $searchText, isActive: $searchIsActive)
-
-                // if searchIsActive {
-                    List {
-                        // Filtered list of cities
-                        ForEach( filteredCities() ) {  city in
-                            Text("\(city.name.capitalized), \(city.state.uppercased())")
-                        }
-                    }
-                    .resignKeyboardOnDragGesture()
-                // }
-            }
-            .modifier(HideNavigationBar())
-        }.onAppear(perform: {
-            if self.database.isEmpty {
-                print("core data is empty")
-                self.database.addCities()
-            } else {
-                print("core data is not empty")
-            }
-        })
-    }
+  @State private var searchText = ""
+  @State private var searchIsActive: Bool = false
+  @Environment(\.managedObjectContext) var context
+  
+  private let database = Database()
+  
+  func filteredCities() -> [City] {
+    return database.filteredCities(searchText: searchText)
+  }
+  
+  var body: some View {
+    NavigationView {
+      VStack {
+        // Search view
+        SearchBar(searchText: $searchText, isActive: $searchIsActive)
+        
+        // if searchIsActive {
+        List {
+          // Filtered list of cities
+          ForEach( filteredCities() ) {  city in
+            Text("\(city.name.capitalized), \(city.state.uppercased())")
+          }
+        }
+        .resignKeyboardOnDragGesture()
+        // }
+      }
+      .modifier(HideNavigationBar())
+    }.onAppear(perform: {
+      if self.database.isEmpty {
+        print("core data is empty")
+        self.database.addCities()
+      } else {
+        print("core data is not empty")
+      }
+    })
+  }
 }
 
 struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-           ContentView()
-              .environment(\.colorScheme, .light)
-
-           ContentView()
-              .environment(\.colorScheme, .dark)
-        }
+  static var previews: some View {
+    Group {
+      ContentView()
+        .environment(\.colorScheme, .light)
+      
+      ContentView()
+        .environment(\.colorScheme, .dark)
     }
+  }
 }

@@ -12,8 +12,8 @@
 		5545482523810EC100140F08 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5545482423810EC100140F08 /* Database.swift */; };
 		554548272381190C00140F08 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554548262381190C00140F08 /* SearchBar.swift */; };
 		5545482B2381C4E600140F08 /* GetUsCities.py in Resources */ = {isa = PBXBuildFile; fileRef = 554548292381C4E600140F08 /* GetUsCities.py */; };
-		5545482D2381D5F900140F08 /* US-Cities-Clean.csv in Resources */ = {isa = PBXBuildFile; fileRef = 5545482C2381D5F900140F08 /* US-Cities-Clean.csv */; };
 		5545482F2381DB1A00140F08 /* String+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5545482E2381DB1A00140F08 /* String+Utils.swift */; };
+		554548362382090D00140F08 /* US-Cities-Clean.csv in Resources */ = {isa = PBXBuildFile; fileRef = 554548352382090D00140F08 /* US-Cities-Clean.csv */; };
 		55F391422380BF9C0024BCC9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F391412380BF9C0024BCC9 /* AppDelegate.swift */; };
 		55F391442380BF9C0024BCC9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F391432380BF9C0024BCC9 /* SceneDelegate.swift */; };
 		55F391472380BF9C0024BCC9 /* Outside_Now.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 55F391452380BF9C0024BCC9 /* Outside_Now.xcdatamodeld */; };
@@ -49,11 +49,11 @@
 /* Begin PBXFileReference section */
 		5545481A2380FB9E00140F08 /* HideNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideNavigationBar.swift; sourceTree = "<group>"; };
 		554548202381013300140F08 /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
-		5545482423810EC100140F08 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		5545482423810EC100140F08 /* Database.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; tabWidth = 2; };
 		554548262381190C00140F08 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		554548292381C4E600140F08 /* GetUsCities.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = GetUsCities.py; sourceTree = "<group>"; };
-		5545482C2381D5F900140F08 /* US-Cities-Clean.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "US-Cities-Clean.csv"; sourceTree = "<group>"; };
 		5545482E2381DB1A00140F08 /* String+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Utils.swift"; sourceTree = "<group>"; };
+		554548352382090D00140F08 /* US-Cities-Clean.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "US-Cities-Clean.csv"; sourceTree = "<group>"; };
 		55F3913E2380BF9C0024BCC9 /* Outside Now.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Outside Now.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		55F391412380BF9C0024BCC9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		55F391432380BF9C0024BCC9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -104,12 +104,19 @@
 			isa = PBXGroup;
 			children = (
 				554548292381C4E600140F08 /* GetUsCities.py */,
-				5545482C2381D5F900140F08 /* US-Cities-Clean.csv */,
+				554548352382090D00140F08 /* US-Cities-Clean.csv */,
 				55F391452380BF9C0024BCC9 /* Outside_Now.xcdatamodeld */,
 				554548202381013300140F08 /* City.swift */,
 				5545482423810EC100140F08 /* Database.swift */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		554548322382011E00140F08 /* API */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 		55F391352380BF9C0024BCC9 = {
@@ -120,7 +127,9 @@
 				55F391652380BF9C0024BCC9 /* Outside NowUITests */,
 				55F3913F2380BF9C0024BCC9 /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		55F3913F2380BF9C0024BCC9 /* Products */ = {
 			isa = PBXGroup;
@@ -135,6 +144,7 @@
 		55F391402380BF9C0024BCC9 /* Outside Now */ = {
 			isa = PBXGroup;
 			children = (
+				554548322382011E00140F08 /* API */,
 				554548172380F83000140F08 /* Data */,
 				55F391742380C3A80024BCC9 /* Extensions */,
 				55F391752380C5820024BCC9 /* Ignored */,
@@ -327,7 +337,7 @@
 				55F391772380C59A0024BCC9 /* Keys.plist in Resources */,
 				5545482B2381C4E600140F08 /* GetUsCities.py in Resources */,
 				55F391512380BF9C0024BCC9 /* LaunchScreen.storyboard in Resources */,
-				5545482D2381D5F900140F08 /* US-Cities-Clean.csv in Resources */,
+				554548362382090D00140F08 /* US-Cities-Clean.csv in Resources */,
 				55F3914E2380BF9C0024BCC9 /* Preview Assets.xcassets in Resources */,
 				55F3914B2380BF9C0024BCC9 /* Assets.xcassets in Resources */,
 			);

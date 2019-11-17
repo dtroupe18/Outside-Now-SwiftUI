@@ -9,9 +9,9 @@
 import Foundation
 
 extension String {
-    /// Returns true is a string is all white space or empty
-    var isBlank: Bool {
-        let trimmed = self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        return trimmed.isEmpty
-    }
+  /// Returns true is a string is all white space or empty
+  var isBlank: Bool {
+    let trimmed = self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+    return trimmed.isEmpty
+  }
 }

@@ -10,8 +10,9 @@ import Foundation
 import CoreData
 
 public final class City: NSManagedObject, Identifiable {
-    static var entityName: String = "City"
-
-    @NSManaged public var name: String
-    @NSManaged public var state: String
+  static var entityName: String = "City"
+  
+  @NSManaged public var name: String
+  @NSManaged public var state: String
+  @NSManaged public var population: Int64
 }
