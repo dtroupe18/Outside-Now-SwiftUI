@@ -10,16 +10,15 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    let array = ["Peter", "Paul", "Mary", "Anna-Lena", "George", "John", "Greg", "Thomas", "Robert", "Bernie", "Mike", "Benno", "Hugo", "Miles", "Michael", "Mikel", "Tim", "Tom", "Lottie", "Lorrie", "Barbara"]
-
     @State private var searchText = ""
     @State private var searchIsActive: Bool = false
     @Environment(\.managedObjectContext) var context
 
-    // @FetchRequest(fetchRequest: City.autoCompleteFetchRequest(searchText: searchText)) var cities: FetchedResults<City>
-    @FetchRequest(fetchRequest: City.allCitiesFetchRequest()) var allCities: FetchedResults<City>
-
     private let database = Database()
+
+    func filteredCities() -> [City] {
+        return database.filteredCities(searchText: searchText)
+    }
 
     var body: some View {
         NavigationView {
@@ -30,8 +29,8 @@ struct ContentView: View {
                 // if searchIsActive {
                     List {
                         // Filtered list of cities
-                        ForEach(self.allCities.filter { $0.name.contains(searchText) }) {  city in
-                            Text("\(city.name), \(city.state)")
+                        ForEach( filteredCities() ) {  city in
+                            Text("\(city.name.capitalized), \(city.state.uppercased())")
                         }
                     }
                     .resignKeyboardOnDragGesture()
