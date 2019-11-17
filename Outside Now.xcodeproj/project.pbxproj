@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5545481B2380FB9E00140F08 /* HideNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5545481A2380FB9E00140F08 /* HideNavigationBar.swift */; };
+		5545481F2380FFDB00140F08 /* US-Cities.csv in Resources */ = {isa = PBXBuildFile; fileRef = 5545481E2380FFDB00140F08 /* US-Cities.csv */; };
+		554548212381013300140F08 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554548202381013300140F08 /* City.swift */; };
+		5545482523810EC100140F08 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5545482423810EC100140F08 /* Database.swift */; };
+		554548272381190C00140F08 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554548262381190C00140F08 /* SearchBar.swift */; };
 		55F391422380BF9C0024BCC9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F391412380BF9C0024BCC9 /* AppDelegate.swift */; };
 		55F391442380BF9C0024BCC9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F391432380BF9C0024BCC9 /* SceneDelegate.swift */; };
 		55F391472380BF9C0024BCC9 /* Outside_Now.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 55F391452380BF9C0024BCC9 /* Outside_Now.xcdatamodeld */; };
@@ -16,6 +21,10 @@
 		55F391512380BF9C0024BCC9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55F3914F2380BF9C0024BCC9 /* LaunchScreen.storyboard */; };
 		55F3915C2380BF9C0024BCC9 /* Outside_NowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F3915B2380BF9C0024BCC9 /* Outside_NowTests.swift */; };
 		55F391672380BF9C0024BCC9 /* Outside_NowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F391662380BF9C0024BCC9 /* Outside_NowUITests.swift */; };
+		55F391772380C59A0024BCC9 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 55F391762380C59A0024BCC9 /* Keys.plist */; };
+		55F391792380D1AB0024BCC9 /* View+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F391782380D1AB0024BCC9 /* View+Utils.swift */; };
+		55F3917B2380D1D00024BCC9 /* UIApplication+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F3917A2380D1D00024BCC9 /* UIApplication+Utils.swift */; };
+		55F3917E2380D8760024BCC9 /* ResignKeyboardOnDragGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F3917D2380D8760024BCC9 /* ResignKeyboardOnDragGesture.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +45,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5545481A2380FB9E00140F08 /* HideNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideNavigationBar.swift; sourceTree = "<group>"; };
+		5545481E2380FFDB00140F08 /* US-Cities.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "US-Cities.csv"; sourceTree = "<group>"; };
+		554548202381013300140F08 /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
+		5545482423810EC100140F08 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		554548262381190C00140F08 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		55F3913E2380BF9C0024BCC9 /* Outside Now.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Outside Now.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		55F391412380BF9C0024BCC9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		55F391432380BF9C0024BCC9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -51,6 +65,10 @@
 		55F391622380BF9C0024BCC9 /* Outside NowUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Outside NowUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		55F391662380BF9C0024BCC9 /* Outside_NowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Outside_NowUITests.swift; sourceTree = "<group>"; };
 		55F391682380BF9C0024BCC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		55F391762380C59A0024BCC9 /* Keys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
+		55F391782380D1AB0024BCC9 /* View+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Utils.swift"; sourceTree = "<group>"; };
+		55F3917A2380D1D00024BCC9 /* UIApplication+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Utils.swift"; sourceTree = "<group>"; };
+		55F3917D2380D8760024BCC9 /* ResignKeyboardOnDragGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResignKeyboardOnDragGesture.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +96,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		554548172380F83000140F08 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				5545481E2380FFDB00140F08 /* US-Cities.csv */,
+				55F391452380BF9C0024BCC9 /* Outside_Now.xcdatamodeld */,
+				554548202381013300140F08 /* City.swift */,
+				5545482423810EC100140F08 /* Database.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		55F391352380BF9C0024BCC9 = {
 			isa = PBXGroup;
 			children = (
@@ -101,14 +130,15 @@
 		55F391402380BF9C0024BCC9 /* Outside Now */ = {
 			isa = PBXGroup;
 			children = (
+				554548172380F83000140F08 /* Data */,
 				55F391742380C3A80024BCC9 /* Extensions */,
+				55F391752380C5820024BCC9 /* Ignored */,
+				55F3917F2380D8A60024BCC9 /* Views */,
+				55F3917C2380D83B0024BCC9 /* ViewModifiers */,
 				55F391412380BF9C0024BCC9 /* AppDelegate.swift */,
 				55F391432380BF9C0024BCC9 /* SceneDelegate.swift */,
-				55F391482380BF9C0024BCC9 /* ContentView.swift */,
-				55F3914A2380BF9C0024BCC9 /* Assets.xcassets */,
-				55F3914F2380BF9C0024BCC9 /* LaunchScreen.storyboard */,
 				55F391522380BF9C0024BCC9 /* Info.plist */,
-				55F391452380BF9C0024BCC9 /* Outside_Now.xcdatamodeld */,
+				55F391802380D8B80024BCC9 /* Supporting Files */,
 				55F3914C2380BF9C0024BCC9 /* Preview Content */,
 			);
 			path = "Outside Now";
@@ -143,8 +173,45 @@
 		55F391742380C3A80024BCC9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				55F391782380D1AB0024BCC9 /* View+Utils.swift */,
+				55F3917A2380D1D00024BCC9 /* UIApplication+Utils.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		55F391752380C5820024BCC9 /* Ignored */ = {
+			isa = PBXGroup;
+			children = (
+				55F391762380C59A0024BCC9 /* Keys.plist */,
+			);
+			path = Ignored;
+			sourceTree = "<group>";
+		};
+		55F3917C2380D83B0024BCC9 /* ViewModifiers */ = {
+			isa = PBXGroup;
+			children = (
+				55F3917D2380D8760024BCC9 /* ResignKeyboardOnDragGesture.swift */,
+				5545481A2380FB9E00140F08 /* HideNavigationBar.swift */,
+			);
+			path = ViewModifiers;
+			sourceTree = "<group>";
+		};
+		55F3917F2380D8A60024BCC9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				55F391482380BF9C0024BCC9 /* ContentView.swift */,
+				554548262381190C00140F08 /* SearchBar.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		55F391802380D8B80024BCC9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				55F3914A2380BF9C0024BCC9 /* Assets.xcassets */,
+				55F3914F2380BF9C0024BCC9 /* LaunchScreen.storyboard */,
+			);
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -251,7 +318,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55F391772380C59A0024BCC9 /* Keys.plist in Resources */,
 				55F391512380BF9C0024BCC9 /* LaunchScreen.storyboard in Resources */,
+				5545481F2380FFDB00140F08 /* US-Cities.csv in Resources */,
 				55F3914E2380BF9C0024BCC9 /* Preview Assets.xcassets in Resources */,
 				55F3914B2380BF9C0024BCC9 /* Assets.xcassets in Resources */,
 			);
@@ -278,10 +347,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55F3917B2380D1D00024BCC9 /* UIApplication+Utils.swift in Sources */,
+				5545481B2380FB9E00140F08 /* HideNavigationBar.swift in Sources */,
+				554548212381013300140F08 /* City.swift in Sources */,
 				55F391422380BF9C0024BCC9 /* AppDelegate.swift in Sources */,
 				55F391442380BF9C0024BCC9 /* SceneDelegate.swift in Sources */,
 				55F391492380BF9C0024BCC9 /* ContentView.swift in Sources */,
 				55F391472380BF9C0024BCC9 /* Outside_Now.xcdatamodeld in Sources */,
+				55F3917E2380D8760024BCC9 /* ResignKeyboardOnDragGesture.swift in Sources */,
+				5545482523810EC100140F08 /* Database.swift in Sources */,
+				554548272381190C00140F08 /* SearchBar.swift in Sources */,
+				55F391792380D1AB0024BCC9 /* View+Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
