@@ -50,6 +50,8 @@ struct ContentView: View {
         // Search view
         SearchBar(searchText: $searchText, isActive: $searchIsActive)
 
+        // Use a ZStack so that the list is hidden behind the weather
+        // but we can show it when search is activated
         ZStack {
           List {
             // Filtered list of cities

@@ -26,6 +26,7 @@ struct LocationCurrentWeatherView: View {
       Text("Overcast throughout the day.")
         .fontWeight(.light)
 
+      Spacer().frame(height: 20)
       HighLowSummaryView()
     }
   }
