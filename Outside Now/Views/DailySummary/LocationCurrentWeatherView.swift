@@ -31,6 +31,7 @@ struct LocationCurrentWeatherView: View {
   }
 }
 
+#if DEBUG
 struct LocationCurrentWeatherView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
@@ -42,3 +43,4 @@ struct LocationCurrentWeatherView_Previews: PreviewProvider {
     }
   }
 }
+#endif

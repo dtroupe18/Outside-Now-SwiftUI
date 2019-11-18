@@ -8,14 +8,17 @@
 
 import SwiftUI
 import CoreData
+import CoreLocation
 
 struct ContentView: View {
+
   @State private var searchText = ""
   @State private var searchIsActive: Bool = false
   @Environment(\.managedObjectContext) var context
 
   private let database: Database
   private let locationService: LocationService
+  private let apiClient: ApiClient
 
   private var listOpacity: Double {
     return searchIsActive ? 1.0 : 0.0
@@ -27,10 +30,14 @@ struct ContentView: View {
 
   init(
     database: Database = Database(),
-    locationService: LocationService = LocationService()
+    locationService: LocationService = LocationService(),
+    apiClient: ApiClient = ApiClient()
   ) {
     self.database = database
     self.locationService = locationService
+    self.apiClient = apiClient
+
+    self.locationService.delegate = self
   }
 
   func filteredCities() -> [City] {
@@ -60,15 +67,26 @@ struct ContentView: View {
       .modifier(HideNavigationBar())
     }.onAppear(perform: {
       if self.database.isEmpty {
-        print("core data is empty")
         self.database.addCities()
+      }
+
+      if !self.locationService.canAccessLocation && !self.locationService.locationAccessDenied {
+        self.locationService.requestAccess()
       } else {
-        print("core data is not empty")
+        // FIXME: Wait for location update?
+        // print("location: \(location)")
       }
     })
   }
 }
 
+extension ContentView: LocationServiceDelegate {
+  func locationSet() {
+    print("#37 delegate was called!")
+  }
+}
+
+#if DEBUG
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
@@ -80,3 +98,4 @@ struct ContentView_Previews: PreviewProvider {
     }
   }
 }
+#endif
