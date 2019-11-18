@@ -17,6 +17,14 @@ struct ContentView: View {
   private let database: Database
   private let locationService: LocationService
 
+  private var listOpacity: Double {
+    return searchIsActive ? 1.0 : 0.0
+  }
+
+  private var nonListOpacity: Double {
+    return searchIsActive ? 0.0 : 1.0
+  }
+
   init(
     database: Database = Database(),
     locationService: LocationService = LocationService()
@@ -35,15 +43,18 @@ struct ContentView: View {
         // Search view
         SearchBar(searchText: $searchText, isActive: $searchIsActive)
 
-        if searchIsActive {
+        ZStack {
           List {
             // Filtered list of cities
             ForEach( filteredCities() ) {  city in
               Text("\(city.name.capitalized), \(city.state.uppercased())")
             }
-            }.resignKeyboardOnDragGesture().hidden()
-        } else {
+          }
+          .resignKeyboardOnDragGesture()
+          .opacity(listOpacity)
+
           LocationCurrentWeatherView()
+          .opacity(nonListOpacity)
         }
       }
       .modifier(HideNavigationBar())
