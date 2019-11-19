@@ -20,9 +20,15 @@ private enum RequestError: String, Error {
 
 typealias DataCallback = (Data) -> Void
 typealias ErrorCallback = (Error) -> Void
-typealias ForecastCallback = (Forecast) -> Void
+
+protocol ApiClientDelegate: class {
+  func apiClientGotError(_ error: Error)
+  func apiClientGotForecast(_ forecast: Forecast)
+}
 
 final class ApiClient {
+  weak var delegate: ApiClientDelegate?
+
   private let path = Bundle.main.path(forResource: "Keys", ofType: "plist")!
   private let baseURL: String =  "https://api.darksky.net/forecast/"
 
@@ -59,48 +65,23 @@ final class ApiClient {
     task.resume()
   }
 
-  /// Returns Forecast struct or Error on the main thread for given latitude and longitude
-  func getForeccastFor(location: CLLocation, onSuccess: ForecastCallback?, onError: ErrorCallback?) {
+  func getForecastFor(location: CLLocation, timestamp: Int?) {
     let lat = location.coordinate.latitude
     let long = location.coordinate.longitude
 
-    self.makeGetRequest(urlAddition: "\(apiKey)/\(lat),\(long)", onSuccess: { data in
-      do {
-        let forecast = try JSONDecoder().decode(Forecast.self, from: data)
-        DispatchQueue.main.async {
-          onSuccess?(forecast)
-        }
-      } catch {
-        DispatchQueue.main.async {
-          onError?(RequestError.decodeFailed.error)
-        }
-        // FIXME: Log this error!
-      }
-    }, onError: { error in
-      DispatchQueue.main.async {
-        onError?(error)
-      }
-    })
-  }
+    let urlAddition = timestamp == nil ? "\(apiKey)/\(lat),\(long)" : "\(apiKey)/\(lat),\(long),\(timestamp!)"
 
-  // Returns Forecast struct or Error on the main thread for the GPS location at time provided
-  func getFutureForecast(lat: Double, long: Double, formattedTime: String, onSuccess: ForecastCallback?, onError: ErrorCallback?) {
-    self.makeGetRequest(urlAddition: "\(apiKey)/\(lat),\(long),\(formattedTime)", onSuccess: { data in
+    self.makeGetRequest(urlAddition: urlAddition, onSuccess: { data in
       do {
         let forecast = try JSONDecoder().decode(Forecast.self, from: data)
-        DispatchQueue.main.async {
-          onSuccess?(forecast)
-        }
+        print("Forecast \(forecast)")
+        self.delegate?.apiClientGotForecast(forecast)
       } catch {
-        DispatchQueue.main.async {
-          onError?(RequestError.decodeFailed.error)
-        }
-        // FIXME: Log this error!
+        // FIXME: Log this error
+        self.delegate?.apiClientGotError(RequestError.decodeFailed.error)
       }
     }, onError: { error in
-      DispatchQueue.main.async {
-        onError?(error)
-      }
+      self.delegate?.apiClientGotError(error)
     })
   }
 }

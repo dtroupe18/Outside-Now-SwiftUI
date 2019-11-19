@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 final class WeatherViewModel {
   public let database: Database
@@ -25,6 +26,9 @@ final class WeatherViewModel {
     if self.database.isEmpty {
       self.database.addCities()
     }
+
+    self.locationService.delegate = self
+    self.apiClient.delegate = self
   }
 
   public func getfilteredCities(searchText: String) -> [City] {
@@ -36,5 +40,27 @@ final class WeatherViewModel {
       !self.locationService.locationAccessDenied {
       self.locationService.requestAccess()
     }
+  }
+}
+
+extension WeatherViewModel: LocationServiceDelegate {
+  func locationSet(to location: CLLocation) {
+    // FIXME: Get the weather for that location
+    self.apiClient.getForecastFor(location: location, timestamp: 0)
+  }
+
+  func locationStringSet(to locationStr: String) {
+    // FIXME: Do something with this string
+  }
+}
+
+extension WeatherViewModel: ApiClientDelegate {
+  func apiClientGotError(_ error: Error) {
+    // FIXME: Show this error to the user
+    print("ERROR: \(String(describing: self)) \(#line) \(error.localizedDescription)")
+  }
+
+  func apiClientGotForecast(_ forecast: Forecast) {
+    // FIXME: Send this data to the view using Combine
   }
 }
