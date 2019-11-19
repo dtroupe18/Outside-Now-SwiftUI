@@ -10,7 +10,8 @@ import CoreLocation
 import UIKit
 
 protocol LocationServiceDelegate {
-  func locationSet()
+  func locationSet(to location: CLLocation)
+  func locationStringSet(to locationStr: String)
 }
 
 final class LocationService: NSObject {
@@ -19,11 +20,19 @@ final class LocationService: NSObject {
   private let locationManager = CLLocationManager()
   private let geoCoder = CLGeocoder()
 
-  public var currentLocation: CLLocation? {
+  private(set) var currentLocation: CLLocation? {
     didSet {
-      if currentLocation != nil {
-        print("Current location \(String(describing: currentLocation))")
-        delegate?.locationSet()
+      if let location = currentLocation {
+        delegate?.locationSet(to: location)
+      }
+    }
+  }
+
+  private(set) var locationString: String? {
+    didSet {
+      if let locationStr = locationString {
+        delegate?.locationStringSet(to: locationStr)
+        print("Location string updated to \(locationStr)")
       }
     }
   }
@@ -64,81 +73,53 @@ final class LocationService: NSObject {
     }
   }
 
-  public func getPlaceMark(completion: @escaping(_ placemark: CLPlacemark?, _ error: Error?) -> ()) {
-      if let location = locationManager.location {
-        // self.currentLocation = location
-        geoCoder.reverseGeocodeLocation(location) { placemarks, error in
-          if let err = error {
-            completion(nil, err)
-          }
-          if let places = placemarks {
-            let placemarkArray = places as [CLPlacemark]
-            if !placemarkArray.isEmpty {
-              completion(placemarkArray[0], nil)
-            }
-          }
-        }
+  private func setPlaceMark(location: CLLocation) {
+    self.geoCoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
+      if let err = error {
+        // FIXME
+        print("ERROR: \(String(describing: self)) \(#line) \(err.localizedDescription)")
+        return
       }
-      else if let location = self.currentLocation {
-        geoCoder.reverseGeocodeLocation(location) { placemarks, error in
-          if let err = error {
-            completion(nil, err)
-          }
-          if let places = placemarks {
-            let placemarkArray = places as [CLPlacemark]
-            if !placemarkArray.isEmpty {
-              completion(placemarkArray[0], nil)
-            }
-          }
-        }
+
+      if let places = placemarks, let first = places.first {
+        self?.setLocationStringFrom(placemark: first)
       }
-      else if let location = CLLocationManager().location {
-        geoCoder.reverseGeocodeLocation(location) { placemarks, error in
-          if let err = error {
-            completion(nil, err)
-          }
-          if let places = placemarks {
-            let placemarkArray = places as [CLPlacemark]
-            if !placemarkArray.isEmpty {
-              completion(placemarkArray[0], nil)
-            }
-          }
-        }
-      }
+    }
   }
 
-//  func parsePlacemark(placemark: CLPlacemark) {
-//      guard let location = placemark.location else { return }
-//      // Update lastPlacemark everytime a new one is parsed
-//      //
-//      self.lastPlacemark = placemark
-//      getWeather(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-//      setLocationLabel(placemark: placemark)
-//  }
-//
-//  func setLocationLabel(placemark: CLPlacemark) {
-//      let city = placemark.locality
-//      let state = placemark.administrativeArea
-//      let country = placemark.country
-//
-//      if city != nil && state != nil {
-//          locationLabel.text = "\(city!), \(state!)"
-//      } else if city != nil && country != nil {
-//          locationLabel.text = "\(city!), \(country!)"
-//      } else if state != nil && country != nil {
-//          locationLabel.text = "\(state!), \(country!)"
-//      } else if city != nil {
-//          locationLabel.text = "\(city!)"
-//      } else if state != nil {
-//          locationLabel.text = "\(state!)"
-//      } else if country != nil {
-//          locationLabel.text = "\(country!)"
-//      } else {
-//          // Stranger Things Easter Egg
-//          //
-//          locationLabel.text = "Hawkins, IN"
-//      }
-//  }
+  private func setLocationStringFrom(placemark: CLPlacemark) {
+    let city = placemark.locality
+    let state = placemark.administrativeArea
+    let country = placemark.country
+
+    if let city = city {
+      if let state = state {
+        self.locationString = "\(city), \(state)"
+        return
+      }
+
+      if let country = country {
+        self.locationString =  "\(city), \(country)"
+        return
+      }
+
+      self.locationString =  city
+      return
+    }
+
+    if let state = state {
+      if let country = country {
+        self.locationString =  "\(state), \(country)"
+        return
+      }
+
+      self.locationString =  state
+      return
+    }
+
+    // Stranger Things Easter Egg
+    self.locationString =  "Hawkins, IN"
+  }
 
   func searchForPlacemark(text: String, completion: @escaping (_ placemark: CLPlacemark?, _ error: Error?) -> ()) {
     geoCoder.geocodeAddressString(text, completionHandler: { (placemarks, error) in
@@ -168,9 +149,10 @@ extension LocationService: CLLocationManagerDelegate {
 
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     if let lastLocation = locations.last {
+      manager.stopUpdatingLocation()
+      manager.delegate = nil // FIXME: Does this need to be reset when searching?
       self.currentLocation = lastLocation
-
-      // let x = lastLocation.coordinate.latitude
+      self.setPlaceMark(location: lastLocation)
     }
   }
 }

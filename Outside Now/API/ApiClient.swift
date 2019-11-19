@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 private enum RequestError: String, Error {
   case noData = "No response from server please try again."
@@ -59,7 +60,10 @@ final class ApiClient {
   }
 
   /// Returns Forecast struct or Error on the main thread for given latitude and longitude
-  func getForecast(lat: Double, long: Double, onSuccess: ForecastCallback?, onError: ErrorCallback?) {
+  func getForeccastFor(location: CLLocation, onSuccess: ForecastCallback?, onError: ErrorCallback?) {
+    let lat = location.coordinate.latitude
+    let long = location.coordinate.longitude
+
     self.makeGetRequest(urlAddition: "\(apiKey)/\(lat),\(long)", onSuccess: { data in
       do {
         let forecast = try JSONDecoder().decode(Forecast.self, from: data)

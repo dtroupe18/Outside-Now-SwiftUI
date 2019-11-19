@@ -16,10 +16,6 @@ struct ContentView: View {
   @State private var searchIsActive: Bool = false
   @Environment(\.managedObjectContext) var context
 
-  private let database: Database
-  private let locationService: LocationService
-  private let apiClient: ApiClient
-
   private var listOpacity: Double {
     return searchIsActive ? 1.0 : 0.0
   }
@@ -28,21 +24,17 @@ struct ContentView: View {
     return searchIsActive ? 0.0 : 1.0
   }
 
-  init(
-    database: Database = Database(),
-    locationService: LocationService = LocationService(),
-    apiClient: ApiClient = ApiClient()
-  ) {
-    self.database = database
-    self.locationService = locationService
-    self.apiClient = apiClient
+  @State private var waitingForLocation: Bool = true
 
-    self.locationService.delegate = self
+  private let viewModel: WeatherViewModel // FIXME: We are going to observe this object
+
+  init(viewModel: WeatherViewModel = WeatherViewModel()) {
+    self.viewModel = viewModel
   }
 
-  func filteredCities() -> [City] {
-    return database.filteredCities(searchText: searchText)
-  }
+//  func filteredCities() -> [City] {
+//    return viewModel.getfilteredCities(searchText: searchText)
+//  }
 
   var body: some View {
     NavigationView {
@@ -55,7 +47,7 @@ struct ContentView: View {
         ZStack {
           List {
             // Filtered list of cities
-            ForEach( filteredCities() ) {  city in
+            ForEach( viewModel.getfilteredCities(searchText: searchText) ) {  city in
               Text("\(city.name.capitalized), \(city.state.uppercased())")
             }
           }
@@ -68,23 +60,8 @@ struct ContentView: View {
       }
       .modifier(HideNavigationBar())
     }.onAppear(perform: {
-      if self.database.isEmpty {
-        self.database.addCities()
-      }
-
-      if !self.locationService.canAccessLocation && !self.locationService.locationAccessDenied {
-        self.locationService.requestAccess()
-      } else {
-        // FIXME: Wait for location update?
-        // print("location: \(location)")
-      }
+      self.viewModel.requestLocationPermissionIfNecessary()
     })
-  }
-}
-
-extension ContentView: LocationServiceDelegate {
-  func locationSet() {
-    print("#37 delegate was called!")
   }
 }
 
