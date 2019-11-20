@@ -11,7 +11,7 @@ import Foundation
 extension Dictionary {
   /// Returns Dictionary with pretty printed JSON
   /// - warning: returns "invalid JSON" is JSON is not properly formated
-  var asJSON: String {
+  var asJsonString: String {
     let invalidJson = "invalid JSON"
     do {
       let jsonData = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)

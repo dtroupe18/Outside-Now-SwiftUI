@@ -65,20 +65,33 @@ final class ApiClient {
     task.resume()
   }
 
-  func getForecastFor(location: CLLocation, timestamp: Int?) {
+  /// Get the forecast data for a given location
+  /// - warning: 0 timestamp means to get the weather for the current time
+  func getForecastFor(location: CLLocation, timestamp: Int = 0) {
+    // FIXME: Should we just inject the current UNIX timestamp instead of 0?
+
     let lat = location.coordinate.latitude
     let long = location.coordinate.longitude
 
-    let urlAddition = timestamp == nil ? "\(apiKey)/\(lat),\(long)" : "\(apiKey)/\(lat),\(long),\(timestamp!)"
+    #if DEBUG
+    print("Getting forecast for latitude: \(lat) & longitude: \(long)")
+    #endif
+
+    let urlAddition = timestamp > 0 ? "\(apiKey)/\(lat),\(long),\(timestamp)" : "\(apiKey)/\(lat),\(long)"
 
     self.makeGetRequest(urlAddition: urlAddition, onSuccess: { data in
       do {
+
+        #if DEBUG
+        print(data.asJsonString)
+        #endif
+
         let forecast = try JSONDecoder().decode(Forecast.self, from: data)
-        print("Forecast \(forecast)")
         self.delegate?.apiClientGotForecast(forecast)
-      } catch {
+      } catch let err {
         // FIXME: Log this error
-        self.delegate?.apiClientGotError(RequestError.decodeFailed.error)
+        // self.delegate?.apiClientGotError(RequestError.decodeFailed.error)
+        self.delegate?.apiClientGotError(err)
       }
     }, onError: { error in
       self.delegate?.apiClientGotError(error)
