@@ -1,5 +1,5 @@
 //
-//  Database.swift
+//  CityDatabase.swift
 //  Outside Now
 //
 //  Created by Dave Troupe on 11/17/19.
@@ -7,14 +7,38 @@
 //
 
 import CoreData
+import Crashlytics
 import UIKit
 
-final class Database {
+protocol CityDatabaseProtocol {
+  var isFull: Bool { get }
+
+  init(logger: Logger, context: NSManagedObjectContext)
+
+  func filteredCities(searchText: String) -> [City]
+  func initialCities() -> [City]
+  func addCities()
+}
+
+final class CityDatabase: CityDatabaseProtocol {
   private let csvFilename: String = "US-Cities-Clean"
   private let csvExt: String = ".csv"
+  private let context: NSManagedObjectContext
+  private let logger: Logger
 
-  // swiftlint:disable:next force_cast
-  private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+  init(logger: Logger, context: NSManagedObjectContext) {
+    self.logger = logger
+    self.context = context
+  }
+
+  private var mostPopulatedCitiesFetchRequest: NSFetchRequest<City> {
+    let request: NSFetchRequest<City> = NSFetchRequest(entityName: City.entityName)
+    let populationSort = NSSortDescriptor(key: "population", ascending: false)
+
+    request.sortDescriptors = [populationSort]
+    request.fetchLimit = 20
+    return request
+  }
 
   private func autoCompleteFetchRequest(searchText: String) -> NSFetchRequest<City> {
     let request: NSFetchRequest<City> = NSFetchRequest(entityName: City.entityName)
@@ -34,35 +58,33 @@ final class Database {
     do {
       return try self.context.fetch(request)
     } catch let err {
-      // FIXME:
-      print(err.localizedDescription)
+      self.logger.logError(err)
       return []
     }
   }
 
-  // FIXME: Remove this only good for debugging
-  func allCitiesFetchRequest() -> NSFetchRequest<City> {
-    let request: NSFetchRequest<City> = NSFetchRequest(entityName: City.entityName)
-    let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+  func initialCities() -> [City] {
+    let request = self.mostPopulatedCitiesFetchRequest
 
-    request.sortDescriptors = [sortDescriptor]
-    return request
+    do {
+      return try self.context.fetch(request)
+    } catch let err {
+      self.logger.logError(err)
+      return []
+    }
   }
 
-  // FIXME: Check if the database if full rather than just empty
-  var isEmpty: Bool {
+  var isFull: Bool {
     do {
       let request: NSFetchRequest<City> = NSFetchRequest(entityName: City.entityName)
-      let count = try self.context.count(for: request)
-      return count == 0
+      let count = try context.count(for: request)
+      return count == 28889 // last row is blank
     } catch let err {
-      // FIXME: Log for realz
-      print("ERROR: \(err)")
+      self.logger.logError(err)
       return true
     }
   }
 
-  // FIXME: Optimize for partial creation
   func addCities() {
     let privateContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
     privateContext.persistentStoreCoordinator = self.context.persistentStoreCoordinator
@@ -70,29 +92,42 @@ final class Database {
       // Code in here is now running "in the background"
 
       let start = Date()
-      guard let sself = self else { return }
-      guard let data = sself.readDataFromCSV() else { fatalError() } // FIXME: Remove fatal error
+      guard let sself = self, let data = sself.readDataFromCSV() else { return }
 
       let rows = data.components(separatedBy: "\n")
       for row in rows where !row.isEmpty {
         let columns = row.components(separatedBy: ",")
 
-        if columns.count == 3 {
+        if columns.count == 6 {
           let city = City(context: privateContext)
-          city.name = columns[0]
-          city.state = columns[1]
+          city.name = columns[0].lowercased()
+          city.state = columns[1].lowercased()
+
           // swiftlint:disable:next force_unwrapping
-          city.population = Int64(columns[2])! // FIXME: Test this force unwrap
+          city.latitude = Double(columns[2])!
+
+          // swiftlint:disable:next force_unwrapping
+          city.longitude = Double(columns[3])!
+
+          // swiftlint:disable:next force_unwrapping
+          city.population = Int64(columns[4])!
+
         } else {
-          // FIXME: Remove
-          fatalError()
+          let userInfo = [
+            NSLocalizedDescriptionKey: "\(String(describing: self)).addCities.incorrectColumnCountError"
+          ]
+
+          let err = NSError(domain: "", code: 44561, userInfo: userInfo)
+          sself.logger.logError(err, additionalInfo: [
+            "columns": columns
+          ])
         }
       }
 
       do {
         try privateContext.save()
       } catch let err {
-        print("ERROR: \(String(describing: self)) \(#line) \(err.localizedDescription)")
+        sself.logger.logError(err)
       }
 
       let end = Date()
@@ -100,19 +135,19 @@ final class Database {
       let unitFlags = Set<Calendar.Component>([.second])
       let datecomponents = calendar.dateComponents(unitFlags, from: start, to: end)
       let seconds = datecomponents.second
-      print("Finished saving all cities to core data in \(String(describing: seconds))")
+
+      sself.logger.logDebug("Finished saving all cities to core data in \(String(describing: seconds))")
     }
   }
 
   private func readDataFromCSV() -> String? {
-    // FIXME: Test this
-    let filepath = Bundle.main.path(forResource: self.csvFilename, ofType: self.csvExt)!
+    // swiftlint:disable:next force_unwrapping
+    let filepath = Bundle.main.path(forResource: self.csvFilename, ofType: self.csvExt)! // covered by tests
 
     do {
       return try String(contentsOfFile: filepath, encoding: .utf8)
     } catch let err {
-      // FIXME: Log this error
-      print("ERROR: \(String(describing: self)) \(#line) \(err.localizedDescription)")
+      self.logger.logError(err)
       return nil
     }
   }

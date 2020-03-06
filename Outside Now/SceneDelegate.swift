@@ -11,19 +11,18 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?
+  private var dependencyContainer: Factory?
 
   func scene(_ scene: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
     // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
     // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
     // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
-    // Get the managed object context from the shared persistent container.
-    // swiftlint:disable:next force_cast
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
     // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
     // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
-    let contentView = ContentView().environment(\.managedObjectContext, context)
+    let factory = DependencyContainer()
+    let contentView = ContentView(factory: factory)
+      .environment(\.managedObjectContext, factory.coreDataContainer.persistentContainer.viewContext)
 
     // Use a UIHostingController as window root view controller.
     if let windowScene = scene as? UIWindowScene {
@@ -31,6 +30,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.rootViewController = UIHostingController(rootView: contentView)
       self.window = window
       window.makeKeyAndVisible()
+    } else {
+      fatalError("Failed to get UIWindowScene")
     }
   }
 
@@ -62,6 +63,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // to restore the scene back to its current state.
 
     // Save changes in the application's managed object context when the application transitions to the background.
-    (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+    self.dependencyContainer?.coreDataContainer.saveContext()
   }
 }

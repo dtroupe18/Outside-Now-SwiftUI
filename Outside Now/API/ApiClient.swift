@@ -9,15 +9,6 @@
 import CoreLocation
 import Foundation
 
-private enum RequestError: String, Error {
-  case noData = "No response from server please try again."
-  case decodeFailed = "The server response is missing data. Please try again."
-
-  var error: Error {
-    return NSError(domain: "", code: 1001, userInfo: [NSLocalizedDescriptionKey: self.rawValue]) as Error
-  }
-}
-
 typealias DataCallback = (Data) -> Void
 typealias ErrorCallback = (Error) -> Void
 
@@ -34,6 +25,8 @@ final class ApiClient {
 
   private var cachedForecasts: [String: Forecast] = [:] // FIXME:
   private let urlSession: URLSession
+  private let logger: Logger
+  private let fileService: FileService
 
   private var apiKey: String {
     // FIXME: Test that this is safe to force unwrap
@@ -41,13 +34,16 @@ final class ApiClient {
     return NSDictionary(contentsOfFile: self.path)!.value(forKey: "DarkSkyKey") as! String
   }
 
-  init(urlSession: URLSession = URLSession(configuration: .default)) {
+  init(urlSession: URLSession, logger: Logger, fileService: FileService) {
     self.urlSession = urlSession
+    self.logger = logger
+    self.fileService = fileService
   }
 
   /// Make a get request at the url passed in
   /// - warning: Data or Error is not returned on the main thread
   private func makeGetRequest(urlAddition: String, onSuccess: DataCallback?, onError: ErrorCallback?) {
+    // swiftlint:disable:next force_unwrapping
     let url = URL(string: "\(baseURL)\(urlAddition)")!
     let request = URLRequest(url: url)
 
@@ -58,7 +54,7 @@ final class ApiClient {
       }
 
       guard let data = data else {
-        onError?(RequestError.noData.error)
+        onError?(Errors.NetworkError.noData)
         return
       }
       onSuccess?(data)
@@ -74,27 +70,20 @@ final class ApiClient {
     let lat = location.coordinate.latitude
     let long = location.coordinate.longitude
 
-#if DEBUG
-    print("Getting forecast for latitude: \(lat) & longitude: \(long)")
-#endif
-
+    self.logger.logDebug("Getting forecast for latitude: \(lat) & longitude: \(long)")
     let urlAddition = timestamp > 0 ? "\(apiKey)/\(lat),\(long),\(timestamp)" : "\(apiKey)/\(lat),\(long)"
 
-    self.makeGetRequest(urlAddition: urlAddition, onSuccess: { data in
+    self.makeGetRequest(urlAddition: urlAddition, onSuccess: { [weak self] data in
       do {
-#if DEBUG
-        print(data.asJsonString)
-#endif
-
+        self?.logger.logJson(data)
         let forecast = try JSONDecoder().decode(Forecast.self, from: data)
-        self.delegate?.apiClientGotForecast(forecast)
+        self?.delegate?.apiClientGotForecast(forecast)
       } catch let err {
-        // FIXME: Log this error
-        // self.delegate?.apiClientGotError(RequestError.decodeFailed.error)
-        self.delegate?.apiClientGotError(err)
+        self?.logger.logError(err)
+        self?.delegate?.apiClientGotError(err)
       }
-    }, onError: { error in
-      self.delegate?.apiClientGotError(error)
+    }, onError: { [weak self] error in
+      self?.delegate?.apiClientGotError(error)
     })
   }
 }

@@ -25,10 +25,14 @@ struct ContentView: View {
 
   @State private var waitingForLocation: Bool = true
 
+  private let factory: Factory
   private let viewModel: WeatherViewModel // FIXME: We are going to observe this object
+  public let logger: Logger
 
-  init(viewModel: WeatherViewModel = WeatherViewModel()) {
-    self.viewModel = viewModel
+  init(factory: Factory = DependencyContainer()) {
+    self.factory = factory
+    self.viewModel = factory.weatherViewModel
+    self.logger = factory.logger
   }
 
 //  func filteredCities() -> [City] {
@@ -48,6 +52,9 @@ struct ContentView: View {
             // Filtered list of cities
             ForEach(viewModel.getfilteredCities(searchText: searchText)) { city in
               Text("\(city.name.capitalized), \(city.state.uppercased())")
+                .onTapGesture {
+                  print("#37 tapped on city: \(city.name)")
+                }
             }
           }
           .resignKeyboardOnDragGesture()

@@ -12,6 +12,9 @@ line_length:
   ignores_interpolated_strings: true
   ignores_urls: true
 
+excluded:
+- Pods
+
 type_body_length:
   - 300 # warning
   - 400 # error

@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import CoreLocation
 import Foundation
 
 public final class City: NSManagedObject, Identifiable {
@@ -15,4 +16,10 @@ public final class City: NSManagedObject, Identifiable {
   @NSManaged public var name: String
   @NSManaged public var state: String
   @NSManaged public var population: Int64
+  @NSManaged public var latitude: Double
+  @NSManaged public var longitude: Double
+
+  var displayName: String {
+    return "\(self.name.capitalized), \(self.state.uppercased())"
+  }
 }

@@ -9,21 +9,26 @@
 import CoreLocation
 import Foundation
 
+// FIXME: Make this conform to a protocol.
+
 final class WeatherViewModel {
-  public let database: Database
+  public let database: CityDatabaseProtocol
   public let locationService: LocationService
   public let apiClient: ApiClient
+  public let logger: Logger
 
   init(
-    database: Database = Database(),
-    locationService: LocationService = LocationService(),
-    apiClient: ApiClient = ApiClient()
+    database: CityDatabaseProtocol,
+    locationService: LocationService,
+    apiClient: ApiClient,
+    logger: Logger
   ) {
     self.database = database
     self.locationService = locationService
     self.apiClient = apiClient
+    self.logger = logger
 
-    if self.database.isEmpty {
+    if !self.database.isFull {
       self.database.addCities()
     }
 
@@ -44,20 +49,19 @@ final class WeatherViewModel {
 }
 
 extension WeatherViewModel: LocationServiceDelegate {
-  func locationSet(to location: CLLocation) {
-    // FIXME: Get the weather for that location
-    self.apiClient.getForecastFor(location: location, timestamp: 0)
+  func locationPermissionDenied() {
+    // FIXME: Show an error to the user!
   }
 
-  func locationStringSet(to _: String) {
-    // FIXME: Do something with this string
+  func locationUpdated(to location: CLLocation) {
+    self.apiClient.getForecastFor(location: location, timestamp: 0)
   }
 }
 
 extension WeatherViewModel: ApiClientDelegate {
   func apiClientGotError(_ error: Error) {
     // FIXME: Show this error to the user
-    print("ERROR: \(String(describing: self)) \(#line) \(error.localizedDescription)")
+    self.logger.logError(error)
   }
 
   func apiClientGotForecast(_: Forecast) {

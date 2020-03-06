@@ -9,13 +9,14 @@
 import CoreLocation
 import UIKit
 
-protocol LocationServiceDelegate {
-  func locationSet(to location: CLLocation)
-  func locationStringSet(to locationStr: String)
+protocol LocationServiceDelegate: AnyObject {
+  func locationPermissionDenied()
+  func locationUpdated(to location: CLLocation)
 }
 
 final class LocationService: NSObject {
-  var delegate: LocationServiceDelegate?
+  private let logger: Logger
+  weak var delegate: LocationServiceDelegate?
 
   private let locationManager = CLLocationManager()
   private let geoCoder = CLGeocoder()
@@ -23,7 +24,7 @@ final class LocationService: NSObject {
   private(set) var currentLocation: CLLocation? {
     didSet {
       if let location = currentLocation {
-        self.delegate?.locationSet(to: location)
+        self.delegate?.locationUpdated(to: location)
       }
     }
   }
@@ -31,8 +32,7 @@ final class LocationService: NSObject {
   private(set) var locationString: String? {
     didSet {
       if let locationStr = locationString {
-        self.delegate?.locationStringSet(to: locationStr)
-        print("Location string updated to \(locationStr)")
+        self.logger.logDebug("Location string updated to \(locationStr)")
       }
     }
   }
@@ -46,28 +46,35 @@ final class LocationService: NSObject {
     case .denied, .restricted, .notDetermined:
       return false
     @unknown default:
-      // FIXME: Log This
+      let err = NSError(
+        domain: "",
+        code: 4001,
+        userInfo: [NSLocalizedDescriptionKey: "unknown case returned for CLLocationManager.authorizationStatus \(authStatus)"]
+      )
+      logger.logError(err)
       return false
     }
   }
 
   public var locationAccessDenied: Bool {
-    return authStatus == .denied
+    return self.authStatus == .denied
   }
 
-  override init() {
+  init(logger: Logger) {
+    self.logger = logger
     super.init()
+
     self.locationManager.delegate = self
 
     if CLLocationManager.locationServicesEnabled() {
-      self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+      self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
       self.locationManager.startUpdatingLocation()
     }
   }
 
   public func requestAccess() {
     if self.authStatus == .denied {
-      // FIXME: We cannot ask the user again so we just want to alert them
+      self.delegate?.locationPermissionDenied()
     } else {
       self.locationManager.requestWhenInUseAuthorization()
     }
@@ -76,8 +83,7 @@ final class LocationService: NSObject {
   private func setPlaceMark(location: CLLocation) {
     self.geoCoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
       if let err = error {
-        // FIXME:
-        print("ERROR: \(String(describing: self)) \(#line) \(err.localizedDescription)")
+        self?.logger.logError(err)
         return
       }
 
@@ -140,8 +146,7 @@ extension LocationService: CLLocationManagerDelegate {
   func locationManager(_: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
     self.authStatus = status
     if status == .denied {
-      // FIXME:
-      // We cannot ask the user again so we just want to alert them
+      self.delegate?.locationPermissionDenied()
     } else if status == .authorizedAlways || status == .authorizedWhenInUse {
       self.locationManager.startUpdatingLocation()
     }
@@ -150,7 +155,7 @@ extension LocationService: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     if let lastLocation = locations.last {
       manager.stopUpdatingLocation()
-      manager.delegate = nil // FIXME: Does this need to be reset when searching?
+      manager.delegate = nil
       self.currentLocation = lastLocation
       self.setPlaceMark(location: lastLocation)
     }
