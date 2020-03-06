@@ -6,22 +6,21 @@
 //  Copyright © 2019 High Tree Development. All rights reserved.
 //
 
-import SwiftUI
 import CoreData
 import CoreLocation
+import SwiftUI
 
 struct ContentView: View {
-
   @State private var searchText = ""
   @State private var searchIsActive: Bool = false
   @Environment(\.managedObjectContext) var context
 
   private var listOpacity: Double {
-    return searchIsActive ? 1.0 : 0.0
+    return self.searchIsActive ? 1.0 : 0.0
   }
 
   private var nonListOpacity: Double {
-    return searchIsActive ? 0.0 : 1.0
+    return self.searchIsActive ? 0.0 : 1.0
   }
 
   @State private var waitingForLocation: Bool = true
@@ -47,7 +46,7 @@ struct ContentView: View {
         ZStack {
           List {
             // Filtered list of cities
-            ForEach( viewModel.getfilteredCities(searchText: searchText) ) {  city in
+            ForEach(viewModel.getfilteredCities(searchText: searchText)) { city in
               Text("\(city.name.capitalized), \(city.state.uppercased())")
             }
           }
@@ -55,7 +54,7 @@ struct ContentView: View {
           .opacity(listOpacity)
 
           LocationCurrentWeatherView()
-          .opacity(nonListOpacity)
+            .opacity(nonListOpacity)
         }
       }
       .modifier(HideNavigationBar())

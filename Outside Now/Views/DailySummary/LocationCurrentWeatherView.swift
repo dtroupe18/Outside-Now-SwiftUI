@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct LocationCurrentWeatherView: View {
-  
   var body: some View {
     VStack(alignment: .center) {
       Text("East Brunswick, NJ")
@@ -20,7 +19,7 @@ struct LocationCurrentWeatherView: View {
         .font(.title)
         .fontWeight(.light)
 
-      Text("Daily Summary")
+      Text("Daily Summaries")
         .fontWeight(.bold)
 
       Text("Overcast throughout the day.")

@@ -6,8 +6,8 @@
 //  Copyright © 2019 High Tree Development. All rights reserved.
 //
 
-import Foundation
 import CoreLocation
+import Foundation
 
 final class WeatherViewModel {
   public let database: Database
@@ -32,7 +32,7 @@ final class WeatherViewModel {
   }
 
   public func getfilteredCities(searchText: String) -> [City] {
-    return database.filteredCities(searchText: searchText)
+    return self.database.filteredCities(searchText: searchText)
   }
 
   public func requestLocationPermissionIfNecessary() {
@@ -49,7 +49,7 @@ extension WeatherViewModel: LocationServiceDelegate {
     self.apiClient.getForecastFor(location: location, timestamp: 0)
   }
 
-  func locationStringSet(to locationStr: String) {
+  func locationStringSet(to _: String) {
     // FIXME: Do something with this string
   }
 }
@@ -60,7 +60,7 @@ extension WeatherViewModel: ApiClientDelegate {
     print("ERROR: \(String(describing: self)) \(#line) \(error.localizedDescription)")
   }
 
-  func apiClientGotForecast(_ forecast: Forecast) {
+  func apiClientGotForecast(_: Forecast) {
     // FIXME: Send this data to the view using Combine
   }
 }

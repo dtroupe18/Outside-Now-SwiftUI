@@ -1,0 +1,26 @@
+disabled_rules:
+  - identifier_name
+  - function_parameter_count
+
+opt_in_rules:
+  - weak_delegate
+  - force_unwrapping
+
+line_length:
+  warning: 120
+  ignores_comments: true
+  ignores_interpolated_strings: true
+  ignores_urls: true
+
+type_body_length:
+  - 300 # warning
+  - 400 # error
+
+file_length:
+  warning: 500
+  error: 800
+
+large_tuple: # warn user when using 3 values in tuple, give error if there are 4
+   - 3
+   - 4
+

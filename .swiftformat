@@ -1,0 +1,29 @@
+# file options
+
+# format options
+
+--indent 2
+--self insert
+--allman false
+--trimwhitespace always
+--wrapcollections before-first
+--wraparguments before-first
+--wrapelements beforefirst
+--closingparen balanced
+--exponentcase lowercase
+--empty void
+--ranges spaced
+--hexliteralcase lowercase
+--linebreaks lf
+--decimalgrouping none
+--commas inline
+--ifdef outdent
+--octalgrouping none
+--hexgrouping none
+--semicolons inline
+
+--enable blankLinesBetweenScopes
+--enable blankLinesAroundMark
+--enable consecutiveBlankLines
+
+--disable andOperator

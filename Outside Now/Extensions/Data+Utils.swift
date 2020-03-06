@@ -9,11 +9,11 @@
 import Foundation
 
 extension Data {
-    var asJsonString: String {
-        if let dict = try? JSONSerialization.jsonObject(with: self, options: []) as? [String: Any] {
-            return dict.asJsonString
-        }
-
-        return "invalid JSON"
+  var asJsonString: String {
+    if let dict = try? JSONSerialization.jsonObject(with: self, options: []) as? [String: Any] {
+      return dict.asJsonString
     }
+
+    return "invalid JSON"
+  }
 }

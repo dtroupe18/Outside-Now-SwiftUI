@@ -17,7 +17,7 @@ struct SearchBar: View {
       HStack {
         Image(systemName: "magnifyingglass")
 
-        TextField("Search", text: $searchText, onEditingChanged: { isEditing in
+        TextField("Search", text: $searchText, onEditingChanged: { _ in
           self.isActive = true
         }, onCommit: {
           print("onCommit")

@@ -9,6 +9,7 @@
 import UIKit
 
 // MARK: - Forcast
+
 struct Forecast: Codable {
   let minutely: Minutely
   let currently: Currently
@@ -23,6 +24,7 @@ struct Forecast: Codable {
 }
 
 // MARK: - Alert
+
 struct Alert: Codable {
   let title: String
   let time, expires: Int
@@ -37,6 +39,7 @@ struct Alert: Codable {
 }
 
 // MARK: - Currently
+
 struct Currently: Codable {
   let apparentTemperature, pressure, precipIntensity: Double
   let time: Int
@@ -57,7 +60,7 @@ struct Currently: Codable {
     let formatter = NumberFormatter()
     formatter.maximumFractionDigits = 0
 
-    let speed = windSpeed.rounded(.toNearestOrAwayFromZero)
+    let speed = self.windSpeed.rounded(.toNearestOrAwayFromZero)
 
     let formatedString = formatter.string(from: NSNumber(value: speed))
     if var string = formatedString {
@@ -69,11 +72,12 @@ struct Currently: Codable {
   }
 
   func hourString(timeZone: TimeZone?) -> String {
-    return time.asDouble.hourString(timeZone: timeZone)
+    return self.time.asDouble.hourString(timeZone: timeZone)
   }
 }
 
 // MARK: - ICON NAME
+
 enum IconName: String, Codable {
   // FIXME: Get SF image
   case clearDay = "clear-day"
@@ -127,6 +131,7 @@ enum PrecipType: String, Codable {
 }
 
 // MARK: - Daily
+
 struct Daily: Codable {
   let summary: String
   let icon: IconName
@@ -134,6 +139,7 @@ struct Daily: Codable {
 }
 
 // MARK: - DailyData
+
 struct DailyData: Codable {
   let icon: IconName
   let windGustTime, temperatureLowTime: Int
@@ -162,11 +168,11 @@ struct DailyData: Codable {
   let temperatureMaxTime: Int
 
   func sunriseHourMinStr(timeZone: TimeZone?) -> String {
-    return sunriseTime.asDouble.hourMinString(timeZone: timeZone)
+    return self.sunriseTime.asDouble.hourMinString(timeZone: timeZone)
   }
 
   func sunsetHourMinStr(timeZone: TimeZone?) -> String {
-    return sunsetTime.asDouble.hourMinString(timeZone: timeZone)
+    return self.sunsetTime.asDouble.hourMinString(timeZone: timeZone)
   }
 
   func timeString(includeDayName: Bool) -> String {
@@ -179,6 +185,7 @@ struct DailyData: Codable {
 }
 
 // MARK: - Flags
+
 struct Flags: Codable {
   let sources: [String]
   let units: String
@@ -191,6 +198,7 @@ struct Flags: Codable {
 }
 
 // MARK: - Hourly
+
 struct Hourly: Codable {
   let summary: String
   let icon: IconName
@@ -198,6 +206,7 @@ struct Hourly: Codable {
 }
 
 // MARK: - Minutely
+
 struct Minutely: Codable {
   let summary: String
   let icon: IconName
@@ -205,6 +214,7 @@ struct Minutely: Codable {
 }
 
 // MARK: - MinutelyData
+
 struct MinutelyData: Codable {
   let precipIntensityError: Double?
   let precipType: PrecipType?

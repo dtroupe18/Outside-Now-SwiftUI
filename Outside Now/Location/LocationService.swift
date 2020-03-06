@@ -23,7 +23,7 @@ final class LocationService: NSObject {
   private(set) var currentLocation: CLLocation? {
     didSet {
       if let location = currentLocation {
-        delegate?.locationSet(to: location)
+        self.delegate?.locationSet(to: location)
       }
     }
   }
@@ -31,7 +31,7 @@ final class LocationService: NSObject {
   private(set) var locationString: String? {
     didSet {
       if let locationStr = locationString {
-        delegate?.locationStringSet(to: locationStr)
+        self.delegate?.locationStringSet(to: locationStr)
         print("Location string updated to \(locationStr)")
       }
     }
@@ -40,7 +40,7 @@ final class LocationService: NSObject {
   private var authStatus = CLLocationManager.authorizationStatus()
 
   public var canAccessLocation: Bool {
-    switch authStatus {
+    switch self.authStatus {
     case .authorizedAlways, .authorizedWhenInUse:
       return true
     case .denied, .restricted, .notDetermined:
@@ -57,26 +57,26 @@ final class LocationService: NSObject {
 
   override init() {
     super.init()
-    locationManager.delegate = self
+    self.locationManager.delegate = self
 
     if CLLocationManager.locationServicesEnabled() {
-      locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-      locationManager.startUpdatingLocation()
+      self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+      self.locationManager.startUpdatingLocation()
     }
   }
 
   public func requestAccess() {
-    if authStatus == .denied {
+    if self.authStatus == .denied {
       // FIXME: We cannot ask the user again so we just want to alert them
     } else {
-      locationManager.requestWhenInUseAuthorization()
+      self.locationManager.requestWhenInUseAuthorization()
     }
   }
 
   private func setPlaceMark(location: CLLocation) {
     self.geoCoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
       if let err = error {
-        // FIXME
+        // FIXME:
         print("ERROR: \(String(describing: self)) \(#line) \(err.localizedDescription)")
         return
       }
@@ -99,30 +99,30 @@ final class LocationService: NSObject {
       }
 
       if let country = country {
-        self.locationString =  "\(city), \(country)"
+        self.locationString = "\(city), \(country)"
         return
       }
 
-      self.locationString =  city
+      self.locationString = city
       return
     }
 
     if let state = state {
       if let country = country {
-        self.locationString =  "\(state), \(country)"
+        self.locationString = "\(state), \(country)"
         return
       }
 
-      self.locationString =  state
+      self.locationString = state
       return
     }
 
     // Stranger Things Easter Egg
-    self.locationString =  "Hawkins, IN"
+    self.locationString = "Hawkins, IN"
   }
 
-  func searchForPlacemark(text: String, completion: @escaping (_ placemark: CLPlacemark?, _ error: Error?) -> ()) {
-    geoCoder.geocodeAddressString(text, completionHandler: { (placemarks, error) in
+  func searchForPlacemark(text: String, completion: @escaping (_ placemark: CLPlacemark?, _ error: Error?) -> Void) {
+    self.geoCoder.geocodeAddressString(text, completionHandler: { placemarks, error in
       if let err = error {
         completion(nil, err)
       }
@@ -137,7 +137,7 @@ final class LocationService: NSObject {
 }
 
 extension LocationService: CLLocationManagerDelegate {
-  func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+  func locationManager(_: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
     self.authStatus = status
     if status == .denied {
       // FIXME:

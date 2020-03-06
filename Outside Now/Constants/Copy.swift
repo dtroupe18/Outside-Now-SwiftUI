@@ -8,6 +8,7 @@
 
 import Foundation
 
+// swiftlint:disable line_length
 enum Copy: CustomStringConvertible {
   case locationAccessDeniedTitle
   case locationAccessDeniedMsg

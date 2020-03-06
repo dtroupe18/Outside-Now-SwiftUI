@@ -6,22 +6,22 @@
 //  Copyright © 2019 High Tree Development. All rights reserved.
 //
 
-import Foundation
 import CoreLocation
+import Foundation
 
 private enum RequestError: String, Error {
   case noData = "No response from server please try again."
   case decodeFailed = "The server response is missing data. Please try again."
 
   var error: Error {
-    return NSError(domain: "", code: 1001, userInfo: [NSLocalizedDescriptionKey : self.rawValue]) as Error
+    return NSError(domain: "", code: 1001, userInfo: [NSLocalizedDescriptionKey: self.rawValue]) as Error
   }
 }
 
 typealias DataCallback = (Data) -> Void
 typealias ErrorCallback = (Error) -> Void
 
-protocol ApiClientDelegate: class {
+protocol ApiClientDelegate: AnyObject {
   func apiClientGotError(_ error: Error)
   func apiClientGotForecast(_ forecast: Forecast)
 }
@@ -30,14 +30,15 @@ final class ApiClient {
   weak var delegate: ApiClientDelegate?
 
   private let path = Bundle.main.path(forResource: "Keys", ofType: "plist")!
-  private let baseURL: String =  "https://api.darksky.net/forecast/"
+  private let baseURL: String = "https://api.darksky.net/forecast/"
 
-  private var cachedForecasts: [String: Forecast] = [:] // FIXME
+  private var cachedForecasts: [String: Forecast] = [:] // FIXME:
   private let urlSession: URLSession
 
   private var apiKey: String {
     // FIXME: Test that this is safe to force unwrap
-    return NSDictionary(contentsOfFile: path)!.value(forKey: "DarkSkyKey") as! String
+    // swiftlint:disable:next force_cast
+    return NSDictionary(contentsOfFile: self.path)!.value(forKey: "DarkSkyKey") as! String
   }
 
   init(urlSession: URLSession = URLSession(configuration: .default)) {
@@ -50,7 +51,7 @@ final class ApiClient {
     let url = URL(string: "\(baseURL)\(urlAddition)")!
     let request = URLRequest(url: url)
 
-    let task = urlSession.dataTask(with: request) { (data, response, error) in
+    let task = self.urlSession.dataTask(with: request) { data, _, error in
       if let err = error {
         onError?(err)
         return
@@ -73,18 +74,17 @@ final class ApiClient {
     let lat = location.coordinate.latitude
     let long = location.coordinate.longitude
 
-    #if DEBUG
+#if DEBUG
     print("Getting forecast for latitude: \(lat) & longitude: \(long)")
-    #endif
+#endif
 
     let urlAddition = timestamp > 0 ? "\(apiKey)/\(lat),\(long),\(timestamp)" : "\(apiKey)/\(lat),\(long)"
 
     self.makeGetRequest(urlAddition: urlAddition, onSuccess: { data in
       do {
-
-        #if DEBUG
+#if DEBUG
         print(data.asJsonString)
-        #endif
+#endif
 
         let forecast = try JSONDecoder().decode(Forecast.self, from: data)
         self.delegate?.apiClientGotForecast(forecast)
